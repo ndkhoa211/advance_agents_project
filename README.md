@@ -5,7 +5,7 @@
 [![Python](https://img.shields.io/badge/Python-3.12+-blue?logo=python)](https://www.python.org/)
 ![LangChain](https://img.shields.io/badge/LangChain-0.3.x-9cf?logo=langchain)
 [![Tavily](https://img.shields.io/badge/Powered%20by-Tavily-ffc72c?logo=tavily)](https://www.tavily.com/)
-[![LangSmith](https://img.shields.io/badge/LangSmith-Tracing-ff69b4?logo=langchain)](https://smith.langchain.com/public/your-project-link)
+[![LangSmith](https://img.shields.io/badge/LangSmith-Tracing-ff69b4?logo=langchain)]([https://smith.langchain.com/public/your-project-link](https://smith.langchain.com/o/856312b1-7816-4389-80cb-b01e398655be/projects/p/e96289ca-0c2a-45a0-8d45-4dafe8db2a92?timeModel=%7B%22duration%22%3A%227d%22%7D))
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
 
