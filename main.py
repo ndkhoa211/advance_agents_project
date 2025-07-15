@@ -36,11 +36,36 @@ def main():
                                    verbose=True,
                                    )
 
-    agent_executor.invoke(
+    # agent_executor.invoke(
+    #     input={
+    #         "input": """generate and save in current working directory QRcodes
+    #         that point to https://github.com/ndkhoa211, you have qrcode package installed already"""
+    #     }
+    # )
+
+
+
+    csv_agent = create_csv_agent(
+        llm=ChatOpenAI(model="gpt-4.1-mini", temperature=0.0),
+        path="episode_info.csv",
+        verbose=True,
+        allow_dangerous_code=True,
+    )
+
+    # csv_agent.invoke(
+    #     input={"input": "how many columns are there in file episode_info.csv"},
+    # ) # Answer:8
+
+    # csv_agent.invoke(
+    #     input={
+    #         "input": "print the seasons by ascending order of the number of episodes they have"
+    #     },
+    # )
+
+    csv_agent.invoke(
         input={
-            "input": """generate and save in current working directory QRcodes
-            that point to https://github.com/ndkhoa211, you have qrcode package installed already"""
-        }
+            "input": "in episode_info.csv, who wrote the most episode? How many episodes did he write?",
+        }, # only part of the .csv is accessed so the answer always be 49 (correct is 58)
     )
 
 
