@@ -3,12 +3,35 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from rich import print
+from rich.markdown import Markdown
+from rich.console import Console
+
+
 from langchain import hub
 from langchain_openai import ChatOpenAI
-from langchain.agents import create_react_agent, AgentExecutor
+from langchain.agents import (
+    create_react_agent,
+    AgentExecutor,
+    create_tool_calling_agent,
+)
 from langchain_experimental.tools import PythonAstREPLTool
 from langchain_experimental.agents.agent_toolkits import create_csv_agent
-from langchain.tools import Tool
+from langchain.tools import Tool, tool
+from typing import Dict, Any
+from langchain_anthropic import ChatAnthropic
+from langchain_core.prompts import ChatPromptTemplate
+
+# try one between these 2:
+from langchain_community.tools.tavily_search import (
+    TavilySearchResults,
+)  # deprecated in LangChain 0.3.25, will be removed in 1.0
+from langchain_tavily import TavilySearch  # output annoying warnings
+
+
+@tool
+def multiply(x: float, y: float) -> float:
+    """Multiply two numbers."""
+    return x * y
 
 
 def main():
@@ -75,10 +98,15 @@ def main():
     # )
 
     ##### ROUTER GRAND AGENT #####
+
+    def python_agent_executor_wrapper(original_prompt: str) -> Dict[str, Any]:
+        return python_agent_executor.invoke({"input": original_prompt})
+
     tools = [
         Tool(
             name="Python Agent",
-            func=lambda x: python_agent_executor.invoke({"input": x}),
+            # func=lambda x: python_agent_executor.invoke({"input": x}),
+            func=python_agent_executor_wrapper,
             description="""useful when you need to transform natural language to python and execute the python code,
                         returning the results in the code execution
                         DOES NOT ACCEPT CODE AS INPUT""",
@@ -113,13 +141,60 @@ def main():
     # )
 
     # EXAMPLE 2
-    print(
-        grand_agent_executor.invoke(
-            {
-                "input": "generate and save in current working directory a QR code that point to https://github.com/ndkhoa211",
-            }
-        )
+    # print(
+    #     grand_agent_executor.invoke(
+    #         {
+    #             "input": "generate and save in current working directory a QR code that point to https://github.com/ndkhoa211",
+    #         }
+    #     )
+    # )
+
+    ########## TOOL CALLING ##########
+    print(":::Hello Tool Calling:::")
+
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", "you're a helpful assistant"),
+            ("human", "{input}"),
+            ("placeholder", "{agent_scratchpad}"),
+        ]
     )
+
+    tools = [TavilySearchResults(), multiply]
+    # tools = [TavilySearch(), multiply]
+
+    # llm = ChatOpenAI(model="gpt-4.1-mini", temperature=0.0)
+    # llm = ChatAnthropic(model_name="claude-3-sonnet-20240229", temperature=0.0)
+    llm = ChatAnthropic(model_name="claude-3-haiku-20240307", temperature=0.0)
+
+    agent = create_tool_calling_agent(
+        llm=llm,
+        tools=tools,
+        prompt=prompt,
+    )
+
+    agent_executor = AgentExecutor(
+        agent=agent,
+        tools=tools,
+    )
+
+    res = agent_executor.invoke(
+        {
+            "input": "what is the weather in Taipei right now? compare it with Kaohsiung, output should be in Celcius.",
+        }
+    )
+
+    # ✅ Extract just the markdown-compatible string
+    text_output = res["output"][0]["text"]
+
+    # ✅ Print as markdown using Rich (beautiful formatting in terminal)
+    console = Console()
+    console.print(Markdown(text_output))
+
+    print(
+        "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+    )
+    print(res)
 
 
 if __name__ == "__main__":

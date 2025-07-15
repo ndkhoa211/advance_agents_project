@@ -6,8 +6,12 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "langchain>=0.3.26",
+    "langchain-anthropic>=0.3.17",
+    "langchain-community>=0.3.27",
+    "langchain-core>=0.3.68",
     "langchain-experimental>=0.3.4",
     "langchain-openai>=0.3.28",
+    "langchain-tavily>=0.2.7",
     "langchainhub>=0.1.21",
     "matplotlib>=3.10.3",
     "pandas>=2.3.1",
