@@ -9,6 +9,8 @@ dependencies = [
     "langchain-experimental>=0.3.4",
     "langchain-openai>=0.3.28",
     "langchainhub>=0.1.21",
+    "matplotlib>=3.10.3",
+    "qrcode>=8.2",
 ]
 
 [dependency-groups]
