@@ -1,0 +1,18 @@
+[project]
+name = "advance-agents-project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "langchain>=0.3.26",
+    "langchain-experimental>=0.3.4",
+    "langchain-openai>=0.3.28",
+    "langchainhub>=0.1.21",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "rich>=14.0.0",
+]
