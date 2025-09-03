@@ -15,6 +15,7 @@ from langchain.agents import (
     create_tool_calling_agent,
 )
 from langchain_experimental.tools import PythonAstREPLTool
+# Python REPL gives llm the ability to execute code
 from langchain_experimental.agents.agent_toolkits import create_csv_agent
 from langchain.tools import Tool, tool
 from typing import Dict, Any
@@ -45,6 +46,41 @@ def main():
     If it does not seem like you can write code to answer the question, just return "I don't know" as the answer.
     """
 
+    # prompt: https://smith.langchain.com/hub/langchain-ai/react-agent-template
+    # """
+    # {instructions}
+    #
+    # TOOLS:
+    # ------
+    #
+    # You have access to the following tools:
+    #
+    # {tools}
+    #
+    # To use a tool, please use the following format:
+    #
+    # ```
+    # Thought: Do I need to use a tool? Yes
+    # Action: the action to take, should be one of [{tool_names}]
+    # Action Input: the input to the action
+    # Observation: the result of the action
+    # ```
+    #
+    # When you have a response to say to the Human, or if you do not need to use a tool, you MUST use the format:
+    #
+    # ```
+    # Thought: Do I need to use a tool? No
+    # Final Answer: [your response here]
+    # ```
+    #
+    # Begin!
+    #
+    # Previous conversation history:
+    # {chat_history}
+    #
+    # New input: {input}
+    # {agent_scratchpad}
+    # """
     base_prompt = hub.pull("langchain-ai/react-agent-template")
 
     prompt = base_prompt.partial(instructions=instructions)
